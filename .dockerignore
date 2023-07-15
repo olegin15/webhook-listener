@@ -1,0 +1,6 @@
+.dockerignore
+.gitignore
+env/
+__pycache__/
+scripts/
+config.json
