@@ -1,7 +1,9 @@
 import json
+import logging
 from fastapi import FastAPI, HTTPException
 import subprocess
 import uvicorn
+from uvicorn.config import LOGGING_CONFIG
 
 
 app = FastAPI()
@@ -37,5 +39,9 @@ def load_config():
 
 if __name__ == "__main__":
     config = load_config()
+    log_config = uvicorn.config.LOGGING_CONFIG
+    log_config["formatters"]["access"]["fmt"] = "%(asctime)s - %(levelname)s - %(message)s"
+    log_config["formatters"]["default"]["fmt"] = "%(asctime)s - %(levelname)s - %(message)s"
     uvicorn.run(app, host=config.get('host', 'localhost'),
-                port=int(config.get('port', 8000)))
+                port=int(config.get('port', 8000)),
+                log_config=log_config)
