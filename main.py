@@ -11,7 +11,7 @@ config = None
 
 
 @app.get("/")
-async def hook_listen(token: str = None, hook: str = None):
+async def hook_listen(token: str = None, hook: str = None, tag: str = None):
     if not token:
         raise HTTPException(status_code=401, detail="No token provided")
 
@@ -25,8 +25,14 @@ async def hook_listen(token: str = None, hook: str = None):
     if not hook_value:
         raise HTTPException(status_code=404, detail="Hook not found")
 
+    # if tag:
+    #     hook_value = f'{hook_value} {tag}'
+
     try:
-        subprocess.call(hook_value)
+        if tag:
+            subprocess.call([hook_value, tag])
+        else:
+            subprocess.call(hook_value)
         return {'success': True}
     except OSError as e:
         raise HTTPException(status_code=400, detail=str(e))
